@@ -105,7 +105,7 @@ export const MuiTable = (props) => {
             </Box>
             <Paper sx={{ width: '90%', marginLeft: '5%', overflow: 'hidden' }}>
                 <TableContainer component={Paper} sx={{ maxHeight: 500 }}>
-                    {/* <ColumnFilter tableData={tableData}/> */}
+                    <ColumnFilter tableData={tableData}/>
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>
