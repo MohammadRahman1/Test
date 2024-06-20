@@ -1,21 +1,12 @@
 import React, { useState } from 'react';
 import {
     TableContainer,
-    Table,
-    TableHead,
-    TableBody,
-    TableRow,
-    TableCell,
     Paper,
-    TablePagination,
     Box,
     Button,
-    TableSortLabel,
 } from '@mui/material';
 import { CSVLink } from "react-csv";
 import { ColumnFilter } from "./Filtering";
-import { headCells } from './HeadCells';
-import { visuallyHidden } from '@mui/utils';
 const headers = [
     { label: "Name", key: "name" },
     { label: "Email", key: "email" },
@@ -27,50 +18,7 @@ const headers = [
     { label: "City", key: "city" },
 ];
 
-function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1
-    } else if (b[orderBy] > a[orderBy]) {
-        return 1
-    } else {
-        return 0
-    }
-}
-
-function getComparator(order, orderBy) {
-    return order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : 
-            (a, b) => -descendingComparator(a, b, orderBy)
-}
-
-function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
-      if (order !== 0) {
-        return order;
-      }
-      return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-}
-export const MuiTable = (props) => {
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
-
-    const { order, orderBy, onRequestSort } = props;
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
-
+export const MuiTable = () => {
     return (
         <Box
             sx={{
@@ -103,65 +51,10 @@ export const MuiTable = (props) => {
                     </Button>
                 </CSVLink>
             </Box>
-            <Paper sx={{ width: '90%', marginLeft: '5%', overflow: 'hidden' }}>
+            <Paper sx={{ width: '90%', marginLeft: '5%'}}>
                 <TableContainer component={Paper} sx={{ maxHeight: 500 }}>
                     <ColumnFilter tableData={tableData}/>
-                    <Table stickyHeader aria-label="sticky table">
-                        <TableHead>
-                            <TableRow>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))} 
-      </TableRow>
-    </TableHead>
-                        <TableBody>
-                            {
-                                tableData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                                    <TableRow
-                                        key={row.name}
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                    >
-                                        <TableCell>{row.name}</TableCell>
-                                        <TableCell>{row.email}</TableCell>
-                                        <TableCell>{row.phone_number}</TableCell>
-                                        <TableCell>{row.donationAmount}</TableCell>
-                                        <TableCell>{row.homeAddress}</TableCell>
-                                        <TableCell>{row.age}</TableCell>
-                                        <TableCell>{row.occupation}</TableCell>
-                                        <TableCell>{row.city}</TableCell>
-                                    </TableRow>
-                                ))
-                            }
-                        </TableBody>
-                    </Table>
                 </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    page={page}
-                    count={tableData.length}
-                    rowsPerPage={rowsPerPage}
-                    component="div"
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleRowsPerPage}
-                />
             </Paper>
         </Box>
     );

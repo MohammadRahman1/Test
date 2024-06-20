@@ -2,6 +2,7 @@
 import {
   MaterialReactTable,
   useMaterialReactTable,
+  MRT_EditActionButtons,
 } from "material-react-table";
 import { useState, useEffect, useMemo } from "react";
 
@@ -40,7 +41,25 @@ export const ColumnFilter = ({ tableData }) => {
       {
         accessorKey: "donationAmount",
         header: "Donation Amount",
-        filterVariant: "range",
+        filterVariant: "range-slider",
+        Cell: ({ cell }) =>
+          cell.getValue().toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'USD',
+          }),
+        filterVariant: 'range-slider',
+        filterFn: 'betweenInclusive',
+        muiFilterSliderProps: {
+          marks: true,
+          max: 1000,
+          min: 5,
+          step: 10,
+          valueLabelFormat: (value) =>
+            value.toLocaleString('en-US', {
+              style: 'currency',
+              currency: 'USD',
+            }),
+        },
       },
       {
         accessorKey: "homeAddress",
@@ -60,17 +79,8 @@ export const ColumnFilter = ({ tableData }) => {
     columns,
     data: tableData,
     initialState: { showColumnFilters: true },
+    enableStickyHeader: true,
+    enableStickyFooter: true,
   });
-
-  // useEffect(() => {
-  //     const table = useMaterialReactTable({
-  //         alternativeColumns : alternativeColumns,
-  //         data: tableData,
-  //         initialState: { showColumnFilters: true },
-  //     });
-  //     setTable(table)
-  // }, []
-  // )
-
   return <MaterialReactTable table={table} />;
 };
